@@ -1,7 +1,7 @@
 {
   "name": "hubb-app",
   "version": "1.0.0",
-  "main": "expo-router/entry",
+  "main": "index.js",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
@@ -14,8 +14,7 @@
     "@react-native-async-storage/async-storage": "2.1.2",
     "@react-navigation/native": "^7.1.17",
     "@react-navigation/native-stack": "^7.3.26",
-    "expo": "~53.0.22",
-    "expo-router": "^5.1.4",
+    "expo": "^53.0.20",
     "expo-status-bar": "~2.2.3",
     "firebase": "^12.2.1",
     "react": "19.0.0",

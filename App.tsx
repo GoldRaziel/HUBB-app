@@ -1,4 +1,3 @@
-// App.tsx
 import "react-native-gesture-handler";
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
@@ -7,23 +6,22 @@ import { AuthProvider, useAuth } from "./src/context/AuthContext";
 import SignInScreen from "./src/screens/SignInScreen";
 import SignUpScreen from "./src/screens/SignUpScreen";
 import HomeScreen from "./src/screens/HomeScreen";
+import WelcomeScreen from "./src/screens/WelcomeScreen";
 
 const Stack = createNativeStackNavigator();
 
 function RootNavigator() {
   const { user, loading } = useAuth();
-
   if (loading) return null;
-
   if (!user) {
     return (
       <Stack.Navigator>
+        <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ title: "Welcome" }} />
         <Stack.Screen name="SignIn" component={SignInScreen} options={{ title: "Accedi" }} />
         <Stack.Screen name="SignUp" component={SignUpScreen} options={{ title: "Registrati" }} />
       </Stack.Navigator>
     );
   }
-
   return (
     <Stack.Navigator>
       <Stack.Screen name="Home" component={HomeScreen} options={{ title: "HUBB" }} />
