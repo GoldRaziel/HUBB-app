@@ -4,8 +4,6 @@
     "slug": "hubb-app",
     "entryPoint": "./index.js",
     "scheme": "hubb",
-    "web": {
-      "bundler": "metro"
-    }
+    "web": { "bundler": "metro", "output": "single" }
   }
 }
