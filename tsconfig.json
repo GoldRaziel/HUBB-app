@@ -5,7 +5,8 @@
     "strict": true,
     "noEmit": true,
     "skipLibCheck": true,
-    "types": ["react", "react-native"]
+    "types": ["react", "react-native"],
+    "typeRoots": ["./src", "./node_modules/@types"]
   },
-  "include": ["**/*.ts", "**/*.tsx"]
+  "include": ["**/*.ts", "**/*.tsx", "**/*.d.ts"]
 }

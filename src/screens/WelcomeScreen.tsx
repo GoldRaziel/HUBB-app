@@ -1,12 +1,14 @@
+
 import React from "react";
 import { View, Text, Button, Image } from "react-native";
 import { colors } from "../theme/colors";
+
 
 export default function WelcomeScreen({ navigation }: any) {
   return (
     <View style={{ flex: 1, backgroundColor: colors.background, padding: 24, gap: 16, justifyContent: "center" }}>
       <Image
-        source={require("../../images/hubb-logo.png")}
+        source={require("../../assets/Logo.png")}
         style={{ width: 200, height: 200, alignSelf: "center", marginBottom: 20 }}
         resizeMode="contain"
       />
