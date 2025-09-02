@@ -1,0 +1,9 @@
+// src/config/firebaseConfig.ts
+export const firebaseConfig = {
+  apiKey: "AIzaSyA3Ru7RWUl-Dhlf2rgRgevOd58whtDUjVw",
+  authDomain: "hubb-prod-11b40.firebaseapp.com",
+  projectId: "hubb-prod-11b40",
+  storageBucket: "hubb-prod-11b40.firebasestorage.app",
+  messagingSenderId: "442951244084",
+  appId: "1:442951244084:web:a996b705b0ca66fb756d61"
+};
