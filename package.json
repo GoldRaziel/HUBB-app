@@ -19,7 +19,7 @@
     "firebase": "^12.2.1",
     "react": "19.0.0",
     "react-dom": "19.0.0",
-    "react-native": "^0.79.5",
+    "react-native": "0.79.5",
     "react-native-gesture-handler": "~2.24.0",
     "react-native-reanimated": "~3.17.4",
     "react-native-safe-area-context": "5.4.0",
@@ -29,6 +29,7 @@
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@types/react": "~19.0.10",
+    "@types/react-dom": "^19.1.9",
     "typescript": "~5.8.3"
   },
   "private": true
