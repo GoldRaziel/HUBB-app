@@ -1,20 +1,15 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { View, Text, TextInput, FlatList, StyleSheet, Platform, Pressable, ActivityIndicator } from "react-native";
+import { View, Text, TextInput, FlatList, StyleSheet, Pressable, ActivityIndicator } from "react-native";
 import * as Location from "expo-location";
 import VenueCard from "../components/VenueCard";
 import venuesData from "../data/mock_venues.json";
 import { BEER_BRANDS } from "../data/brands";
 import { haversineKm } from "../utils/distance";
 import { Ionicons } from "@expo/vector-icons";
+import LangSelector from "../components/LangSelector";
+import { useLang } from "../context/LangContext";
 
 type Lang = "en"|"it"|"ar";
-function getLang():Lang{
-  if (Platform.OS==="web" && typeof window!=="undefined") {
-    const q = new URLSearchParams(window.location.search).get("lang");
-    if (q==="it"||q==="ar"||q==="en") return q;
-  }
-  return "en";
-}
 const STR:any = {
   en:{ home:"Nearby venues", search:"Search by name, area...", filters:"Filters", beer:"Beer", wine:"Wine", both:"Both", cocktail:"Cocktail", brands:"Brands", near:"Near me" },
   it:{ home:"Locali vicini", search:"Cerca per nome, zona...", filters:"Filtri", beer:"Birra", wine:"Vino", both:"Entrambi", cocktail:"Cocktail", brands:"Marche", near:"Vicino a me" },
@@ -23,7 +18,9 @@ const STR:any = {
 type Venue = { id:string; name:string; address:string; phone?:string; lat:number; lng:number; categories:string[]; brands:string[]; distanceKm?:number; };
 
 export default function HomeScreen(){
-  const lang = getLang(); const T=STR[lang];
+  const { lang, isRTL } = useLang();
+  const T=STR[lang];
+
   const [q,setQ]=useState("");
   const [type,setType]=useState<"beer"|"wine"|"both"|"cocktail">("both");
   const [selectedBrands,setSelectedBrands]=useState<string[]>([]);
@@ -72,9 +69,11 @@ export default function HomeScreen(){
   }
 
   return (
-    <View style={styles.wrap}>
+    <View style={[styles.wrap, isRTL && styles.rtl]}>
       <View style={styles.topbar}>
+        <LangSelector />
         <Text style={styles.title}>{T.home}</Text>
+
         <View style={styles.searchBox}>
           <Ionicons name="search" size={18} color="#888"/>
           <TextInput
@@ -122,17 +121,18 @@ const C = { gold:"#D4AF37", bg:"#000", panel:"#0E1116" };
 
 const styles = StyleSheet.create({
   wrap:{ flex:1, backgroundColor:C.bg },
+  rtl:{ direction:"rtl" as any, writingDirection:"rtl" as any },
   topbar:{ paddingHorizontal:16, paddingTop:18 },
   title:{ color:"#fff", fontSize:22, fontWeight:"800", marginBottom:10 },
-  searchBox:{ flexDirection:"row", alignItems:"center", gap:8, backgroundColor:"#111", borderRadius:999, borderWidth:1, borderColor:"#222", paddingHorizontal:12, height:44 },
+  searchBox:{ flexDirection:"row", alignItems:"center", gap:8 as any, backgroundColor:"#111", borderRadius:999, borderWidth:1, borderColor:"#222", paddingHorizontal:12, height:44 },
   searchInput:{ color:"#fff", flex:1 },
-  filtersRow:{ flexDirection:"row", flexWrap:"wrap", gap:8, marginTop:12, marginBottom:10 },
-  pill:{ flexDirection:"row", alignItems:"center", gap:6, borderRadius:999, paddingVertical:8, paddingHorizontal:12, borderWidth:1, borderColor:"#2a2a2a", backgroundColor:"#111" },
+  filtersRow:{ flexDirection:"row", flexWrap:"wrap", gap:8 as any, marginTop:12, marginBottom:10 },
+  pill:{ flexDirection:"row", alignItems:"center", gap:6 as any, borderRadius:999, paddingVertical:8, paddingHorizontal:12, borderWidth:1, borderColor:"#2a2a2a", backgroundColor:"#111" },
   pillActive:{ backgroundColor:"#fff" },
   pillTxt:{ color:"#E6E6E6", fontWeight:"600" },
   pillTxtActive:{ color:"#000" },
   section:{ color:C.gold, fontWeight:"700", marginTop:6, marginBottom:6 },
-  brandsWrap:{ flexDirection:"row", flexWrap:"wrap", gap:8 },
+  brandsWrap:{ flexDirection:"row", flexWrap:"wrap", gap:8 as any },
   brand:{ backgroundColor:"#111", borderWidth:1, borderColor:"#222", borderRadius:999, paddingVertical:6, paddingHorizontal:10 },
   brandActive:{ backgroundColor:"#fff" },
   brandTxt:{ color:"#EDEDED", fontSize:12 },

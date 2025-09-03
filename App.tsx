@@ -4,21 +4,31 @@ import { onAuthStateChanged, User } from "firebase/auth";
 import { auth } from "./src/lib/firebase";
 import WelcomeScreen from "./src/screens/WelcomeScreen";
 import HomeScreen from "./src/screens/HomeScreen";
+import { LangProvider } from "./src/context/LangContext";
 
 export default function App(){
-  const [user,setUser]=useState<User|null>(null);
-  const [loading,setLoading]=useState(true);
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(()=>{
-    const unsub = onAuthStateChanged(auth, u=>{ setUser(u); setLoading(false); });
-    return ()=>unsub();
-  },[]);
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (u) => {
+      setUser(u);
+      setLoading(false);
+    });
+    return () => unsub();
+  }, []);
 
   if (loading) {
-    return <View style={{flex:1,alignItems:"center",justifyContent:"center",backgroundColor:"#000"}}>
-      <ActivityIndicator color="#D4AF37"/>
-    </View>
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "#000" }}>
+        <ActivityIndicator color="#D4AF37" />
+      </View>
+    );
   }
 
-  return user ? <HomeScreen/> : <WelcomeScreen/>;
+  return (
+    <LangProvider>
+      {user ? <HomeScreen /> : <WelcomeScreen />}
+    </LangProvider>
+  );
 }
