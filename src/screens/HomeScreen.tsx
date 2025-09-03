@@ -75,7 +75,7 @@ export default function HomeScreen(){
         <Text style={styles.title}>{T.home}</Text>
 
         <View style={styles.searchBox}>
-          <Ionicons name="search" size={18} color="#888"/>
+          <Ionicons name="search" size={18} color="#888" style={{marginRight:8}}/>
           <TextInput
             value={q} onChangeText={setQ}
             placeholder={T.search} placeholderTextColor="#999"
@@ -92,7 +92,7 @@ export default function HomeScreen(){
             </Pressable>
           ))}
           <Pressable onPress={()=>setNearby(x=>!x)} style={[styles.pill, nearby && styles.pillActive]}>
-            {loadingLoc ? <ActivityIndicator/> : <Ionicons name="navigate-outline" size={16} color={nearby?"#000":"#E6E6E6"}/>}
+            {loadingLoc ? <ActivityIndicator/> : <Ionicons name="navigate-outline" size={16} color={nearby?"#000":"#E6E6E6"} style={{marginRight:6}}/>}
             <Text style={[styles.pillTxt, nearby && styles.pillTxtActive]}>{T.near}</Text>
           </Pressable>
         </View>
@@ -124,16 +124,16 @@ const styles = StyleSheet.create({
   rtl:{ direction:"rtl" as any, writingDirection:"rtl" as any },
   topbar:{ paddingHorizontal:16, paddingTop:18 },
   title:{ color:"#fff", fontSize:22, fontWeight:"800", marginBottom:10 },
-  searchBox:{ flexDirection:"row", alignItems:"center", gap:8 as any, backgroundColor:"#111", borderRadius:999, borderWidth:1, borderColor:"#222", paddingHorizontal:12, height:44 },
+  searchBox:{ flexDirection:"row", alignItems:"center", backgroundColor:"#111", borderRadius:999, borderWidth:1, borderColor:"#222", paddingHorizontal:12, height:44 },
   searchInput:{ color:"#fff", flex:1 },
-  filtersRow:{ flexDirection:"row", flexWrap:"wrap", gap:8 as any, marginTop:12, marginBottom:10 },
-  pill:{ flexDirection:"row", alignItems:"center", gap:6 as any, borderRadius:999, paddingVertical:8, paddingHorizontal:12, borderWidth:1, borderColor:"#2a2a2a", backgroundColor:"#111" },
+  filtersRow:{ flexDirection:"row", flexWrap:"wrap", marginTop:12, marginBottom:10 },
+  pill:{ flexDirection:"row", alignItems:"center", borderRadius:999, paddingVertical:8, paddingHorizontal:12, borderWidth:1, borderColor:"#2a2a2a", backgroundColor:"#111", marginRight:8, marginBottom:8 },
   pillActive:{ backgroundColor:"#fff" },
   pillTxt:{ color:"#E6E6E6", fontWeight:"600" },
   pillTxtActive:{ color:"#000" },
   section:{ color:C.gold, fontWeight:"700", marginTop:6, marginBottom:6 },
-  brandsWrap:{ flexDirection:"row", flexWrap:"wrap", gap:8 as any },
-  brand:{ backgroundColor:"#111", borderWidth:1, borderColor:"#222", borderRadius:999, paddingVertical:6, paddingHorizontal:10 },
+  brandsWrap:{ flexDirection:"row", flexWrap:"wrap" },
+  brand:{ backgroundColor:"#111", borderWidth:1, borderColor:"#222", borderRadius:999, paddingVertical:6, paddingHorizontal:10, marginRight:8, marginBottom:8 },
   brandActive:{ backgroundColor:"#fff" },
   brandTxt:{ color:"#EDEDED", fontSize:12 },
   brandTxtActive:{ color:"#000", fontSize:12, fontWeight:"700" }

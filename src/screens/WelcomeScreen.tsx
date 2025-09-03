@@ -219,9 +219,9 @@ const styles = StyleSheet.create({
   btnDisabled: { opacity: 0.6 },
   btnTextWhite: { color: COLORS.white, fontWeight: "700", letterSpacing: 0.3 },
   googleBtn: {
-    flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 10 as any,
-    width: "100%", maxWidth: 420, height: 48, backgroundColor: COLORS.white,
-    borderRadius: 999, borderWidth: 1, borderColor: COLORS.googleBorder, marginTop: 10, paddingHorizontal: 14,
+    flexDirection: "row", alignItems: "center", justifyContent: "center",
+    width: "100%", maxWidth: 420, height: 48, backgroundColor: "#FFFFFF",
+    borderRadius: 999, borderWidth: 1, borderColor: "#dadce0", marginTop: 10, paddingHorizontal: 14
   },
   googleIcon: { width: 18, height: 18, marginRight: 8 },
   googleText: { color: "#3c4043", fontWeight: "600" },

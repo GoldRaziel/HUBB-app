@@ -19,8 +19,8 @@ export default function LangSelector(){
   );
 }
 const styles = StyleSheet.create({
-  wrap:{ flexDirection:'row', backgroundColor:'#111', borderRadius:999, borderWidth:1, borderColor:'#222', padding:4, gap:4 as any, alignSelf:'flex-end', marginBottom:12 },
-  pill:{ paddingVertical:6, paddingHorizontal:12, borderRadius:999, backgroundColor:'transparent' },
+  wrap:{ flexDirection:'row', backgroundColor:'#111', borderRadius:999, borderWidth:1, borderColor:'#222', padding:4, alignSelf:'flex-end', marginBottom:12 },
+  pill:{ paddingVertical:6, paddingHorizontal:12, borderRadius:999, backgroundColor:'transparent', marginHorizontal:4 },
   pillActive:{ backgroundColor:COLORS.gold },
   txt:{ color:'#E6E6E6', fontWeight:'700', fontSize:12 },
   txtActive:{ color:'#000' }

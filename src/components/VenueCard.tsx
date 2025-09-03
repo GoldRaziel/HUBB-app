@@ -25,7 +25,7 @@ export default function VenueCard({ venue }:Props){
       </View>
 
       <View style={styles.actions}>
-        <Pressable onPress={()=>openGoogleMaps({lat:venue.lat,lng:venue.lng,q:venue.name})} style={styles.iconBtn} accessibilityLabel="Open in Google Maps">
+        <Pressable onPress={()=>openGoogleMaps({lat:venue.lat,lng:venue.lng,q:venue.name})} style={[styles.iconBtn, {marginRight:14}]} accessibilityLabel="Open in Google Maps">
           <Ionicons name="map-outline" size={20} color={COLORS.green}/>
           <Text style={styles.iconTxt}>Maps</Text>
         </Pressable>
@@ -53,10 +53,10 @@ const styles = StyleSheet.create({
   addr:{ color:"#D9D9D9", fontSize:13, marginBottom:6 },
   row:{ flexDirection:"row", alignItems:"center", marginBottom:8 },
   meta:{ color:"#AAA", fontSize:12 },
-  actions:{ flexDirection:"row", gap:14, marginTop:4 },
-  iconBtn:{ flexDirection:"row", alignItems:"center", gap:6, backgroundColor:"#111", paddingHorizontal:10, paddingVertical:8, borderRadius:999, borderWidth:1, borderColor:"#2a2a2a" },
-  iconTxt:{ color:"#E6E6E6", fontSize:12, fontWeight:"600" },
-  brands:{ flexDirection:"row", flexWrap:"wrap", gap:8, marginTop:12 },
-  brandPill:{ backgroundColor:"#151922", borderRadius:999, paddingVertical:6, paddingHorizontal:10, borderWidth:1, borderColor:"#222" },
+  actions:{ flexDirection:"row", marginTop:4 },
+  iconBtn:{ flexDirection:"row", alignItems:"center", backgroundColor:"#111", paddingHorizontal:10, paddingVertical:8, borderRadius:999, borderWidth:1, borderColor:"#2a2a2a" },
+  iconTxt:{ color:"#E6E6E6", fontSize:12, fontWeight:"600", marginLeft:6 },
+  brands:{ flexDirection:"row", flexWrap:"wrap", marginTop:12 },
+  brandPill:{ backgroundColor:"#151922", borderRadius:999, paddingVertical:6, paddingHorizontal:10, borderWidth:1, borderColor:"#222", marginRight:8, marginBottom:8 },
   brandTxt:{ color:"#EDEDED", fontSize:12 }
 });
