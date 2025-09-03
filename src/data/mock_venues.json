@@ -1,0 +1,32 @@
+[
+  {
+    "id":"v1",
+    "name":"McGettigan's JLT",
+    "address":"Cluster J, JLT, Dubai",
+    "phone":"+971 4 356 0470",
+    "lat":25.0745,
+    "lng":55.1440,
+    "categories":["beer","wine"],
+    "brands":["Guinness","Heineken","Kilkenny"]
+  },
+  {
+    "id":"v2",
+    "name":"The Irish Village",
+    "address":"Garhoud, Dubai",
+    "phone":"+971 4 239 5000",
+    "lat":25.2457,
+    "lng":55.3550,
+    "categories":["beer","wine"],
+    "brands":["Heineken","Hoegaarden","Grimbergen"]
+  },
+  {
+    "id":"v3",
+    "name":"The Tap House",
+    "address":"Club Vista Mare, Palm Jumeirah",
+    "phone":"+971 4 514 3778",
+    "lat":25.2295,
+    "lng":55.1535,
+    "categories":["beer","wine","cocktail"],
+    "brands":["Poretti","Leffe","Peroni"]
+  }
+]

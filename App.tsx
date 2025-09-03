@@ -1,56 +1,24 @@
-import "react-native-gesture-handler";
-import React from "react";
-import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { AuthProvider, useAuth } from "./src/context/AuthContext";
-import SignInScreen from "./src/screens/SignInScreen";
-import SignUpScreen from "./src/screens/SignUpScreen";
-import HomeScreen from "./src/screens/HomeScreen";
+import React, { useEffect, useState } from "react";
+import { View, ActivityIndicator } from "react-native";
+import { onAuthStateChanged, User } from "firebase/auth";
+import { auth } from "./src/lib/firebase";
 import WelcomeScreen from "./src/screens/WelcomeScreen";
-import { colors } from "./src/theme/colors";
+import HomeScreen from "./src/screens/HomeScreen";
 
-const Stack = createNativeStackNavigator();
+export default function App(){
+  const [user,setUser]=useState<User|null>(null);
+  const [loading,setLoading]=useState(true);
 
-const navTheme = {
-  ...DefaultTheme,
-  colors: {
-    ...DefaultTheme.colors,
-    background: colors.background,
-    text: colors.text,
-    primary: colors.accentRed,
-    card: colors.background,
-    border: colors.accentGreen,
-    notification: colors.accentRed,
-  },
-};
+  useEffect(()=>{
+    const unsub = onAuthStateChanged(auth, u=>{ setUser(u); setLoading(false); });
+    return ()=>unsub();
+  },[]);
 
-function RootNavigator() {
-  const { user, loading } = useAuth();
-  if (loading) return null;
-
-  if (!user) {
-    return (
-      <Stack.Navigator screenOptions={{ headerStyle: { backgroundColor: colors.background }, headerTintColor: colors.text }}>
-        <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ title: "Welcome" }} />
-        <Stack.Screen name="SignIn" component={SignInScreen} options={{ title: "Accedi" }} />
-        <Stack.Screen name="SignUp" component={SignUpScreen} options={{ title: "Registrati" }} />
-      </Stack.Navigator>
-    );
+  if (loading) {
+    return <View style={{flex:1,alignItems:"center",justifyContent:"center",backgroundColor:"#000"}}>
+      <ActivityIndicator color="#D4AF37"/>
+    </View>
   }
 
-  return (
-    <Stack.Navigator screenOptions={{ headerStyle: { backgroundColor: colors.background }, headerTintColor: colors.text }}>
-      <Stack.Screen name="Home" component={HomeScreen} options={{ title: "HUBB" }} />
-    </Stack.Navigator>
-  );
-}
-
-export default function App() {
-  return (
-    <AuthProvider>
-      <NavigationContainer theme={navTheme}>
-        <RootNavigator />
-      </NavigationContainer>
-    </AuthProvider>
-  );
+  return user ? <HomeScreen/> : <WelcomeScreen/>;
 }

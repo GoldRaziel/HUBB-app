@@ -35,3 +35,8 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
+
+# Ignore archives
+*.zip
+*.tar.gz
+*.tgz
