@@ -4,6 +4,10 @@
     "slug": "hubb-app",
     "entryPoint": "./index.js",
     "scheme": "hubb",
-    "web": { "bundler": "metro", "output": "single" }
+    "owner": "goldraziel",
+    "web": {
+      "bundler": "metro",
+      "output": "single"
+    }
   }
 }
