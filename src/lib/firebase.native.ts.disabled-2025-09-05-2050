@@ -2,10 +2,7 @@ import { initializeApp, getApps } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import Constants from 'expo-constants';
 
-const cfg: any =
-  (Constants?.expoConfig?.extra as any)?.firebase ??
-  (Constants as any)?.manifest?.extra?.firebase ??
-  {};
+const cfg = (Constants?.expoConfig?.extra as any)?.firebase;
 
 export const firebaseConfig = {
   apiKey: cfg?.apiKey,
@@ -18,7 +15,4 @@ export const firebaseConfig = {
 };
 
 const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
-
-// Expo Go non include il modulo nativo di Auth: usa SEMPRE getAuth qui.
 export const auth = getAuth(app);
-export default app;
