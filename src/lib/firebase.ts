@@ -2,35 +2,33 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { Platform } from "react-native";
 
-let authInitDone = false;
-let auth: import("firebase/auth").Auth;
-
+// Configurazione Firebase (fornita da te)
 const firebaseConfig = {
-  apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID,
+  apiKey: "AIzaSyA3Ru7RWUl-Dhlf2rgRgevOd58whtDUjVw",
+  authDomain: "hubb-prod-11b40.firebaseapp.com",
+  projectId: "hubb-prod-11b40",
+  storageBucket: "hubb-prod-11b40.firebasestorage.app",
+  messagingSenderId: "442951244084",
+  appId: "1:442951244084:web:a996b705b0ca66fb756d61"
 };
 
+// Inizializza l'app
 const app = initializeApp(firebaseConfig);
 
-// Web: getAuth standard
-// Native (Expo/React Native): initializeAuth + AsyncStorage persistence
+// Auth: web vs native (Expo/React Native)
+let auth: import("firebase/auth").Auth;
+
 if (Platform.OS === "web") {
+  // Web → normale getAuth
   auth = getAuth(app);
-  authInitDone = true;
 } else {
-  // lazy import per evitare bundling web
-  // @ts-ignore
+  // Native → AsyncStorage per persistenza
+  // require() per evitare che il bundler web includa moduli RN
   const { initializeAuth, getReactNativePersistence } = require("firebase/auth");
-  // @ts-ignore
   const ReactNativeAsyncStorage = require("@react-native-async-storage/async-storage").default;
   auth = initializeAuth(app, {
     persistence: getReactNativePersistence(ReactNativeAsyncStorage),
   });
-  authInitDone = true;
 }
 
 export { app, auth };

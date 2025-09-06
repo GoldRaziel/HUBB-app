@@ -82,10 +82,10 @@ export default function WelcomeScreen() {
   const EXPO_CLIENT_ID = "442951244084-lj40t8dv4lh7vke5tliijk6ke9pf94ss.apps.googleusercontent.com";
   const WEB_CLIENT_ID  = "442951244084-1ujfjj5cvi06hd6jdknuq11j0r2u67ro.apps.googleusercontent.com";
 
-  const { request, promptAsync } = useGoogleAuth({
-    expoClientId: EXPO_CLIENT_ID,
-    webClientId: WEB_CLIENT_ID,
-  });
+    const { request, promptAsync } = useGoogleAuth({
+      webClientId: WEB_CLIENT_ID,
+      androidClientId: process.env.EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID,
+    });
 
   const handleGoogle = useCallback(async () => {
     try {
