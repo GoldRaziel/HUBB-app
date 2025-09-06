@@ -103,7 +103,7 @@ export default function WelcomeScreen() {
         Alert.alert(T.continueWithGoogle, lang === "it" ? "Token non ricevuto dal provider." : lang === "ar" ? "لم نستلم رمز الدخول من المزوّد." : "No token received from provider.");
         return;
       }
-      if (Platform.OS === "web") { try { await setPersistence(auth, browserLocalPersistence); } catch {} }
+      try { await setPersistence(auth, browserLocalPersistence); } catch {}
       const cred = GoogleAuthProvider.credential(idToken);
       await signInWithCredential(auth, cred);
     } catch (e: any) {
@@ -120,7 +120,7 @@ export default function WelcomeScreen() {
     }
     try {
       setBusy(true);
-      if (Platform.OS === "web") { try { await setPersistence(auth, browserLocalPersistence); } catch {} }
+      try { await setPersistence(auth, browserLocalPersistence); } catch {}
       await signInWithEmailAndPassword(auth, email.trim(), password);
     } catch (e: any) {
       Alert.alert(T.continueWithEmail, e?.message || "Invalid credentials");

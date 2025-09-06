@@ -6,20 +6,17 @@ import { Platform } from "react-native";
 WebBrowser.maybeCompleteAuthSession();
 
 type Params = {
-  expoClientId: string;   // Client ID per Expo Go / native
-  webClientId: string;    // Client ID per Web
+  expoClientId: string;   // Expo Go (native)
+  webClientId: string;    // Web
   androidClientId?: string;
   iosClientId?: string;
 };
 
 export function useGoogleAuth(params: Params) {
   const isWeb = Platform.OS === "web";
-
-  // Su WEB: NO scheme personalizzato; useProxy:false
-  // Su NATIVE (Expo Go): usa il Proxy (redirect di Expo) => useProxy:true
   const redirectUri = isWeb
-    ? makeRedirectUri({ useProxy: false })             // es. http://localhost:8081 o URL prod
-    : makeRedirectUri({ useProxy: true });             // es. https://auth.expo.dev/...
+    ? makeRedirectUri({ scheme: "hubb", useProxy: false })
+    : "https://auth.expo.dev/@goldraziel/hubb-app";
 
   const [request, response, promptAsync] = Google.useAuthRequest({
     expoClientId: params.expoClientId,
@@ -28,8 +25,9 @@ export function useGoogleAuth(params: Params) {
     iosClientId: params.iosClientId,
     scopes: ["openid", "email", "profile"],
     responseType: "id_token",
+    usePKCE: false,           // evita chiusure popup senza token su web
     redirectUri,
-    useProxy: !isWeb, // proxy solo su native
+    useProxy: !isWeb,         // proxy solo su native (Expo Go)
   });
 
   return { request, response, promptAsync };
