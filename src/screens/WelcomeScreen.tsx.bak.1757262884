@@ -87,48 +87,33 @@ export default function WelcomeScreen() {
     webClientId: WEB_CLIENT_ID,
   });
 
-    const handleGoogle = useCallback(async () => {
+  const handleGoogle = useCallback(async () => {
     try {
-      setBusy(true);
-
+      setBusy(true)
       if (Platform.OS === "web") {
-        // login diretto Firebase con popup
-        try { await setPersistence(auth, browserLocalPersistence); } catch {}
-        const provider = new GoogleAuthProvider();
-        await signInWithPopup(auth, provider);
-        return;
+        if (typeof window !== "undefined") {
+          try { await setPersistence(auth, browserLocalPersistence); } catch {}
+        }
+        const provider = new GoogleAuthProvider()
+        await signInWithPopup(auth, provider)
+        return
       }
-
-      // flusso Expo AuthSession per mobile
+    try {
       if (!request) return;
+      setBusy(true);
       const res = await promptAsync();
       if (res?.type !== "success") {
-        Alert.alert(
-          T.continueWithGoogle,
-          lang === "it"
-            ? "Accesso annullato."
-            : lang === "ar"
-            ? "تم إلغاء تسجيل الدخول."
-            : "Sign-in cancelled."
-        );
+        Alert.alert(T.continueWithGoogle, lang === "it" ? "Accesso annullato." : lang === "ar" ? "تم إلغاء تسجيل الدخول." : "Sign-in cancelled.");
         return;
       }
-
       const anyRes: any = res;
       const idToken: string | undefined =
         anyRes?.params?.id_token || anyRes?.authentication?.idToken;
       if (!idToken) {
-        Alert.alert(
-          T.continueWithGoogle,
-          lang === "it"
-            ? "Token non ricevuto dal provider."
-            : lang === "ar"
-            ? "لم نستلم رمز الدخول من المزوّد."
-            : "No token received from provider."
-        );
+        Alert.alert(T.continueWithGoogle, lang === "it" ? "Token non ricevuto dal provider." : lang === "ar" ? "لم نستلم رمز الدخول من المزوّد." : "No token received from provider.");
         return;
       }
-
+      if (Platform.OS === "web") { try { await setPersistence(auth, browserLocalPersistence); } catch {} }
       const cred = GoogleAuthProvider.credential(idToken);
       await signInWithCredential(auth, cred);
     } catch (e: any) {
@@ -137,7 +122,8 @@ export default function WelcomeScreen() {
       setBusy(false);
     }
   }, [request, lang]);
-const handleEmailLogin = useCallback(async () => {
+
+  const handleEmailLogin = useCallback(async () => {
     if (!email || !password) {
       Alert.alert(T.continueWithEmail, lang === "it" ? "Inserisci email e password." : lang === "ar" ? "يرجى إدخال البريد الإلكتروني وكلمة المرور." : "Enter email and password.");
       return;
