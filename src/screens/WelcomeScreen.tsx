@@ -9,7 +9,6 @@ import {
   setPersistence, browserLocalPersistence,
 } from "firebase/auth";
 import { auth } from "../lib/firebase";
-import { useGoogleAuth } from "../auth/useGoogleAuth";
 import { useLang } from "../context/LangContext";
 import LangSelector from "../components/LangSelector";
 
@@ -81,37 +80,23 @@ export default function WelcomeScreen() {
 
   const EXPO_CLIENT_ID = "442951244084-lj40t8dv4lh7vke5tliijk6ke9pf94ss.apps.googleusercontent.com";
   const WEB_CLIENT_ID  = "442951244084-1ujfjj5cvi06hd6jdknuq11j0r2u67ro.apps.googleusercontent.com";
-
-  const { request, promptAsync } = useGoogleAuth({
-    expoClientId: EXPO_CLIENT_ID,
-    webClientId: WEB_CLIENT_ID,
-  });
-
-  const handleGoogle = useCallback(async () => {
-    try {
-      if (!request) return;
+// 
+//     expoClientId: EXPO_CLIENT_ID,
+//     webClientId: WEB_CLIENT_ID,
+//   });
+// 
+    const handleGoogle = useCallback(async () => {
+//     try {
+//       if (!request) return;
       setBusy(true);
-      const res = await promptAsync();
-      if (res?.type !== "success") {
-        Alert.alert(T.continueWithGoogle, lang === "it" ? "Accesso annullato." : lang === "ar" ? "تم إلغاء تسجيل الدخول." : "Sign-in cancelled.");
-        return;
-      }
-      const anyRes: any = res;
-      const idToken: string | undefined =
-        anyRes?.params?.id_token || anyRes?.authentication?.idToken;
-      if (!idToken) {
-        Alert.alert(T.continueWithGoogle, lang === "it" ? "Token non ricevuto dal provider." : lang === "ar" ? "لم نستلم رمز الدخول من المزوّد." : "No token received from provider.");
-        return;
-      }
-      if (Platform.OS === "web") { try { await setPersistence(auth, browserLocalPersistence); } catch {} }
-      const cred = GoogleAuthProvider.credential(idToken);
-      await signInWithCredential(auth, cred);
-    } catch (e: any) {
-      Alert.alert(T.continueWithGoogle, e?.message || "Unknown error");
-    } finally {
-      setBusy(false);
-    }
-  }, [request, lang]);
+        try {
+          await signInWithPopup(auth, provider);
+          // TODO: naviga alla Home
+        } catch (e) {
+          console.error(e);
+          alert("Login failed");
+        }
+    }, []);
 
   const handleEmailLogin = useCallback(async () => {
     if (!email || !password) {
@@ -190,7 +175,6 @@ export default function WelcomeScreen() {
       </Pressable>
     </View>
   );
-}
 
 const styles = StyleSheet.create({
   container: {
@@ -226,3 +210,4 @@ const styles = StyleSheet.create({
   googleIcon: { width: 18, height: 18, marginRight: 8 },
   googleText: { color: "#3c4043", fontWeight: "600" },
 });
+}

@@ -18,10 +18,5 @@
   "include": [
     "**/*.ts",
     "**/*.tsx"
-  ],
-  "exclude": [
-    "node_modules",
-    "src/lib/firebase.native.ts",
-    ".bak"
   ]
 }
