@@ -1,5 +1,3 @@
-import { onAuthStateChanged, signOut, User } from "firebase/auth";
-import { auth } from "../lib/firebase";
 import React, { useEffect, useMemo, useState } from "react";
 import { View, Text, TextInput, FlatList, StyleSheet, Pressable, ActivityIndicator } from "react-native";
 import * as Location from "expo-location";
@@ -29,13 +27,6 @@ export default function HomeScreen(){
   const [nearby,setNearby]=useState(false);
   const [myPos,setMyPos]=useState<{lat:number,lng:number}|null>(null);
   const [loadingLoc,setLoadingLoc]=useState(false);
-
-  const [user,setUser] = useState<User|null>(null);
-
-  useEffect(()=>{
-    const unsub = onAuthStateChanged(auth, (u)=>setUser(u));
-    return () => unsub();
-  },[]);
 
   const all:Venue[] = venuesData as any;
 
@@ -82,15 +73,6 @@ export default function HomeScreen(){
       <View style={styles.topbar}>
         <LangSelector />
         <Text style={styles.title}>{T.home}</Text>
-        {user && (
-          <View style={styles.userRow}>
-            <Text style={styles.userName}>{user.displayName || user.email}</Text>
-            <Pressable onPress={()=>signOut(auth)} style={styles.logoutBtn}>
-              <Text style={styles.logoutTxt}>Logout</Text>
-            </Pressable>
-          </View>
-        )}
-
 
         <View style={styles.searchBox}>
           <Ionicons name="search" size={18} color="#888"/>
@@ -156,7 +138,3 @@ const styles = StyleSheet.create({
   brandTxt:{ color:"#EDEDED", fontSize:12 },
   brandTxtActive:{ color:"#000", fontSize:12, fontWeight:"700" }
 });
-  ,userRow:{flexDirection:"row",alignItems:"center",justifyContent:"space-between",marginBottom:8}
-  ,userName:{color:"#fff",fontWeight:"700"}
-  ,logoutBtn:{marginLeft:12,backgroundColor:"#fff",borderRadius:999,paddingVertical:6,paddingHorizontal:12}
-  ,logoutTxt:{color:"#000",fontWeight:"700"}
