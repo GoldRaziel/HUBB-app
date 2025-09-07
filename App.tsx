@@ -1,3 +1,4 @@
+import "./debug/bootstrap";
 import React, { useEffect, useState } from "react";
 import { View, ActivityIndicator } from "react-native";
 import { onAuthStateChanged, User } from "firebase/auth";
