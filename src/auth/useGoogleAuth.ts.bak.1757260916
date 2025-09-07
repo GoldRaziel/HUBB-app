@@ -20,13 +20,6 @@ export function useGoogleAuth(params: Params) {
   const redirectUri = isWeb
     ? makeRedirectUri({ useProxy: false })             // es. http://localhost:8081 o URL prod
     : makeRedirectUri({ useProxy: true });             // es. https://auth.expo.dev/...
-  
-  // === DEBUG: stampa i valori chiave per configurare OAuth (web/nativo) ===
-  if (typeof window !== "undefined") {
-    console.log("[HUBB][AUTH] isWeb:", isWeb, "origin:", window.location.origin);
-  }
-  console.log("[HUBB][AUTH] redirectUri:", redirectUri);
-
 
   const [request, response, promptAsync] = Google.useAuthRequest({
     expoClientId: params.expoClientId,
