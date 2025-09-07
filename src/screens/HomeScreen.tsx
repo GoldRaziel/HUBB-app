@@ -155,8 +155,10 @@ const styles = StyleSheet.create({
   brandActive:{ backgroundColor:"#fff" },
   brandTxt:{ color:"#EDEDED", fontSize:12 },
   brandTxtActive:{ color:"#000", fontSize:12, fontWeight:"700" }
-});
   ,userRow:{flexDirection:"row",alignItems:"center",justifyContent:"space-between",marginBottom:8}
   ,userName:{color:"#fff",fontWeight:"700"}
+  ,logoutBtn:{marginLeft:12,backgroundColor:"#fff",borderRadius:999,paddingVertical:6,paddingHorizontal:12}
+  ,logoutTxt:{color:"#000",fontWeight:"700"}
+});
   ,logoutBtn:{marginLeft:12,backgroundColor:"#fff",borderRadius:999,paddingVertical:6,paddingHorizontal:12}
   ,logoutTxt:{color:"#000",fontWeight:"700"}
