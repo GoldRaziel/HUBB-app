@@ -1,0 +1,13 @@
+[build]
+  command = "npx expo export -p web"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+  EXPO_NO_TELEMETRY = "1"
+
+# SPA: manda tutto a index.html
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
