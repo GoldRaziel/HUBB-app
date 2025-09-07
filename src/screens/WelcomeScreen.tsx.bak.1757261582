@@ -4,7 +4,7 @@ import {
   TextInput, Image, Platform, I18nManager, StyleSheet,
 } from "react-native";
 import {
-  onAuthStateChanged, signOut, User, GoogleAuthProvider, signInWithPopup,
+  onAuthStateChanged, signOut, User, GoogleAuthProvider,
   signInWithCredential, signInWithEmailAndPassword,
   setPersistence, browserLocalPersistence,
 } from "firebase/auth";
@@ -88,16 +88,6 @@ export default function WelcomeScreen() {
   });
 
   const handleGoogle = useCallback(async () => {
-    try {
-      setBusy(true)
-      if (Platform.OS === "web") {
-        if (typeof window !== "undefined") {
-          try { await setPersistence(auth, browserLocalPersistence); } catch {}
-        }
-        const provider = new GoogleAuthProvider()
-        await signInWithPopup(auth, provider)
-        return
-      }
     try {
       if (!request) return;
       setBusy(true);
