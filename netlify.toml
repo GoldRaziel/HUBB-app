@@ -11,3 +11,9 @@
   from = "/*"
   to = "/index.html"
   status = 200
+
+# Security headers (CSP compatibile con Firebase/Google OAuth)
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://www.googletagmanager.com https://www.googleapis.com https://accounts.google.com; connect-src 'self' https://*.googleapis.com https://*.gstatic.com https://*.firebaseio.com https://*.firebaseapp.com; img-src 'self' data: https://*.gstatic.com https://*.googleusercontent.com; style-src 'self' 'unsafe-inline'; frame-src https://accounts.google.com;"
