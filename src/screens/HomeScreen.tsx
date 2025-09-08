@@ -32,6 +32,9 @@ export default function HomeScreen(){
 
   const [user,setUser] = useState<User|null>(null);
 
+  // NEW: stato per aprire/chiudere il menu hamburger
+  const [menuOpen, setMenuOpen] = useState(false);
+
   useEffect(()=>{
     const unsub = onAuthStateChanged(auth, (u)=>setUser(u));
     return () => unsub();
@@ -80,6 +83,16 @@ export default function HomeScreen(){
   return (
     <View style={[styles.wrap, isRTL && styles.rtl]}>
       <View style={styles.topbar}>
+        {/* NEW: bottone hamburger a sinistra */}
+        <Pressable
+          onPress={()=>setMenuOpen(true)}
+          style={styles.hamburgerBtn}
+          accessibilityLabel="Open menu"
+          accessibilityRole="button"
+        >
+          <Ionicons name="menu" size={18} color="#fff" />
+        </Pressable>
+
         <LangSelector />
         <Text style={styles.title}>{T.home}</Text>
         {user && (
@@ -90,7 +103,6 @@ export default function HomeScreen(){
             </Pressable>
           </View>
         )}
-
 
         <View style={styles.searchBox}>
           <Ionicons name="search" size={18} color="#888"/>
@@ -131,6 +143,50 @@ export default function HomeScreen(){
         keyExtractor={item=>item.id}
         renderItem={({item})=><VenueCard venue={item}/>}
       />
+
+      {/* NEW: Drawer laterale sovrapposto (non altera layout esistente) */}
+      {menuOpen && (
+        <>
+          <Pressable style={styles.scrim} onPress={()=>setMenuOpen(false)} />
+          <View style={styles.drawer}>
+            <View style={styles.drawerHeader}>
+              <Text style={styles.drawerTitle}>{T.filters}</Text>
+              <Pressable onPress={()=>setMenuOpen(false)} style={styles.closeBtn}>
+                <Ionicons name="close" size={18} color="#000" />
+              </Pressable>
+            </View>
+
+            <View style={styles.drawerSection}>
+              <Text style={styles.drawerLabel}>{T.both}/{T.beer}/{T.wine}/{T.cocktail}</Text>
+              <View style={{flexDirection:"row", flexWrap:"wrap", gap:8 as any, marginTop:8}}>
+                {(["both","beer","wine","cocktail"] as const).map(k=>(
+                  <Pressable key={k} onPress={()=>{ setType(k); setMenuOpen(false); }} style={[styles.pill, type===k && styles.pillActive]}>
+                    <Text style={[styles.pillTxt, type===k && styles.pillTxtActive]}>{T[k]}</Text>
+                  </Pressable>
+                ))}
+              </View>
+            </View>
+
+            <View style={styles.drawerSection}>
+              <Pressable onPress={()=>{ setNearby(x=>!x); }} style={[styles.pill, nearby && styles.pillActive]}>
+                <Ionicons name="navigate-outline" size={16} color={nearby?"#000":"#E6E6E6"}/>
+                <Text style={[styles.pillTxt, nearby && styles.pillTxtActive]}>{T.near}</Text>
+              </Pressable>
+            </View>
+
+            <View style={styles.drawerSection}>
+              <Text style={styles.drawerLabel}>{T.brands}</Text>
+              <View style={{flexDirection:"row", flexWrap:"wrap", gap:8 as any, marginTop:8}}>
+                {BEER_BRANDS.map(b=>(
+                  <Pressable key={b} onPress={()=>toggleBrand(b)} style={[styles.brand, selectedBrands.includes(b)&&styles.brandActive]}>
+                    <Text style={[styles.brandTxt, selectedBrands.includes(b)&&styles.brandTxtActive]}>{b}</Text>
+                  </Pressable>
+                ))}
+              </View>
+            </View>
+          </View>
+        </>
+      )}
     </View>
   );
 }
@@ -154,7 +210,19 @@ const styles = StyleSheet.create({
   brand:{ backgroundColor:"#111", borderWidth:1, borderColor:"#222", borderRadius:999, paddingVertical:6, paddingHorizontal:10 },
   brandActive:{ backgroundColor:"#fff" },
   brandTxt:{ color:"#EDEDED", fontSize:12 },
-  brandTxtActive:{ color:"#000", fontSize:12, fontWeight:"700" }
-  ,userRow:{flexDirection:"row",alignItems:"center",justifyContent:"space-between",marginBottom:8}
-  ,userName:{color:"#fff",fontWeight:"700"}
+  brandTxtActive:{ color:"#000", fontSize:12, fontWeight:"700" },
+  userRow:{flexDirection:"row",alignItems:"center",justifyContent:"space-between",marginBottom:8},
+  userName:{color:"#fff",fontWeight:"700"},
+  logoutBtn:{ backgroundColor:"#fff", paddingVertical:6, paddingHorizontal:10, borderRadius:999, marginLeft:10 },
+  logoutTxt:{ color:"#000", fontWeight:"700" },
+
+  // NEW: stili hamburger/drawer non invasivi
+  hamburgerBtn:{ width:36, height:36, borderRadius:18, alignItems:"center", justifyContent:"center", borderWidth:1, borderColor:"#222", backgroundColor:"#111", marginBottom:10 },
+  scrim:{ position:"absolute", top:0, bottom:0, left:0, right:0, backgroundColor:"rgba(0,0,0,0.35)" },
+  drawer:{ position:"absolute", top:0, bottom:0, left:0, width:300, backgroundColor:"#fff", paddingTop:16, paddingHorizontal:12 },
+  drawerHeader:{ flexDirection:"row", alignItems:"center", justifyContent:"space-between", marginBottom:8 },
+  drawerTitle:{ fontSize:18, fontWeight:"800", color:"#000" },
+  closeBtn:{ width:34, height:34, borderRadius:17, alignItems:"center", justifyContent:"center", backgroundColor:"#f2f2f2" },
+  drawerSection:{ marginTop:10 },
+  drawerLabel:{ color:"#111", fontWeight:"700" },
 });
