@@ -36,9 +36,7 @@ if (Platform.OS === "web") {
 if (typeof window !== "undefined") {
   try {
     // eslint-disable-next-line no-console
-    console.log("[HUBB][OAuth] authDomain:", (auth as any)?.app?.options?.authDomain || "(empty)");
     // eslint-disable-next-line no-console
-    console.log("[HUBB][OAuth] origin:", window.location.origin);
   } catch {}
 }
 
