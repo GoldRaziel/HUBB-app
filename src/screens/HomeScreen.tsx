@@ -17,6 +17,7 @@ const STR:any = {
   it:{ home:"Locali vicini", search:"Cerca per nome, zona...", filters:"Filtri", beer:"Birra", wine:"Vino", both:"Entrambi", cocktail:"Cocktail", brands:"Marche", near:"Vicino a me" },
   ar:{ home:"أماكن قريبة", search:"ابحث بالاسم أو المنطقة...", filters:"فلاتر", beer:"بيرة", wine:"نبيذ", both:"كلاهما", cocktail:"كوكتيل", brands:"العلامات", near:"بالقرب مني" },
 };
+
 type Venue = { id:string; name:string; address:string; phone?:string; lat:number; lng:number; categories:string[]; brands:string[]; distanceKm?:number; };
 
 export default function HomeScreen(){
@@ -24,15 +25,13 @@ export default function HomeScreen(){
   const T=STR[lang];
 
   const [q,setQ]=useState("");
-  const [type,setType]=useState<"beer"|"wine"|"both"|"cocktail">("both");
-  const [selectedBrands,setSelectedBrands]=useState<string[]>([]);
+  const [selectedTypes,setSelectedTypes]=useState<string[]>([]);      // multi: beer/wine/cocktail
+  const [selectedBrands,setSelectedBrands]=useState<string[]>([]);    // solo nel drawer
   const [nearby,setNearby]=useState(false);
   const [myPos,setMyPos]=useState<{lat:number,lng:number}|null>(null);
   const [loadingLoc,setLoadingLoc]=useState(false);
 
   const [user,setUser] = useState<User|null>(null);
-
-  // NEW: stato per aprire/chiudere il menu hamburger
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(()=>{
@@ -62,8 +61,8 @@ export default function HomeScreen(){
       const s=q.trim().toLowerCase();
       arr = arr.filter(v => (v.name+" "+v.address).toLowerCase().includes(s));
     }
-    if (type!=="both"){
-      arr = arr.filter(v => v.categories.includes(type));
+    if (selectedTypes.length){
+      arr = arr.filter(v => selectedTypes.some(t => v.categories.includes(t)));
     }
     if (selectedBrands.length){
       arr = arr.filter(v => selectedBrands.every(b => v.brands.includes(b)));
@@ -74,16 +73,19 @@ export default function HomeScreen(){
       arr.sort((a,b)=>a.name.localeCompare(b.name));
     }
     return arr;
-  },[all,q,type,selectedBrands,myPos,nearby]);
+  },[all,q,selectedTypes,selectedBrands,myPos,nearby]);
 
   function toggleBrand(b:string){
     setSelectedBrands(prev => prev.includes(b) ? prev.filter(x=>x!==b) : [...prev,b]);
+  }
+  function toggleType(k:"beer"|"wine"|"cocktail"){
+    setSelectedTypes(prev => prev.includes(k) ? prev.filter(x=>x!==k) : [...prev,k]);
   }
 
   return (
     <View style={[styles.wrap, isRTL && styles.rtl]}>
       <View style={styles.topbar}>
-        {/* NEW: bottone hamburger a sinistra */}
+        {/* Hamburger a sinistra */}
         <Pressable
           onPress={()=>setMenuOpen(true)}
           style={styles.hamburgerBtn}
@@ -93,16 +95,7 @@ export default function HomeScreen(){
           <Ionicons name="menu" size={18} color="#fff" />
         </Pressable>
 
-        <LangSelector />
-        <Text style={styles.title}>{T.home}</Text>
-        {user && (
-          <View style={styles.userRow}>
-            <Text style={styles.userName}>{user.displayName || user.email}</Text>
-            <Pressable onPress={()=>signOut(auth)} style={styles.logoutBtn}>
-              <Text style={styles.logoutTxt}>Logout</Text>
-            </Pressable>
-          </View>
-        )}
+        {/* Titolo rimosso; user/Logout saranno nel drawer */}
 
         <View style={styles.searchBox}>
           <Ionicons name="search" size={18} color="#888"/>
@@ -113,10 +106,14 @@ export default function HomeScreen(){
           />
         </View>
 
+        {/* In pagina: solo Birra/Vino/Cocktail (multi) + Vicino a me */}
         <View style={styles.filtersRow}>
-          {(["both","beer","wine","cocktail"] as const).map(k=>(
-            <Pressable key={k} onPress={()=>setType(k)} style={[styles.pill, type===k && styles.pillActive]}>
-              <Text style={[styles.pillTxt, type===k && styles.pillTxtActive]}>
+          {(["beer","wine","cocktail"] as const).map(k=>(
+            <Pressable
+              key={k}
+              onPress={()=>toggleType(k)}
+              style={[styles.pill, selectedTypes.includes(k) && styles.pillActive]}>
+              <Text style={[styles.pillTxt, selectedTypes.includes(k) && styles.pillTxtActive]}>
                 {T[k]}
               </Text>
             </Pressable>
@@ -125,15 +122,6 @@ export default function HomeScreen(){
             {loadingLoc ? <ActivityIndicator/> : <Ionicons name="navigate-outline" size={16} color={nearby?"#000":"#E6E6E6"}/>}
             <Text style={[styles.pillTxt, nearby && styles.pillTxtActive]}>{T.near}</Text>
           </Pressable>
-        </View>
-
-        <Text style={styles.section}>{T.brands}</Text>
-        <View style={styles.brandsWrap}>
-          {BEER_BRANDS.map(b=>(
-            <Pressable key={b} onPress={()=>toggleBrand(b)} style={[styles.brand, selectedBrands.includes(b)&&styles.brandActive]}>
-              <Text style={[styles.brandTxt, selectedBrands.includes(b)&&styles.brandTxtActive]}>{b}</Text>
-            </Pressable>
-          ))}
         </View>
       </View>
 
@@ -144,7 +132,7 @@ export default function HomeScreen(){
         renderItem={({item})=><VenueCard venue={item}/>}
       />
 
-      {/* NEW: Drawer laterale sovrapposto (non altera layout esistente) */}
+      {/* Drawer laterale */}
       {menuOpen && (
         <>
           <Pressable style={styles.scrim} onPress={()=>setMenuOpen(false)} />
@@ -156,24 +144,24 @@ export default function HomeScreen(){
               </Pressable>
             </View>
 
+            {/* Filtri nel menu (multi) — senza "Entrambi" */}
             <View style={styles.drawerSection}>
-              <Text style={styles.drawerLabel}>{T.both}/{T.beer}/{T.wine}/{T.cocktail}</Text>
+              <Text style={styles.drawerLabel}>{T.beer}/{T.wine}/{T.cocktail}</Text>
               <View style={{flexDirection:"row", flexWrap:"wrap", gap:8 as any, marginTop:8}}>
-                {(["both","beer","wine","cocktail"] as const).map(k=>(
-                  <Pressable key={k} onPress={()=>{ setType(k); setMenuOpen(false); }} style={[styles.pill, type===k && styles.pillActive]}>
-                    <Text style={[styles.pillTxt, type===k && styles.pillTxtActive]}>{T[k]}</Text>
+                {(["beer","wine","cocktail"] as const).map(k=>(
+                  <Pressable
+                    key={k}
+                    onPress={()=>toggleType(k)}
+                    style={[styles.pill, selectedTypes.includes(k) && styles.pillActiveDrawer]}>
+                    <Text style={[styles.pillTxt, selectedTypes.includes(k) && styles.pillTxtActiveDrawer]}>{T[k]}</Text>
                   </Pressable>
                 ))}
               </View>
             </View>
 
-            <View style={styles.drawerSection}>
-              <Pressable onPress={()=>{ setNearby(x=>!x); }} style={[styles.pill, nearby && styles.pillActive]}>
-                <Ionicons name="navigate-outline" size={16} color={nearby?"#000":"#E6E6E6"}/>
-                <Text style={[styles.pillTxt, nearby && styles.pillTxtActive]}>{T.near}</Text>
-              </Pressable>
-            </View>
+            {/* "Vicino a me" rimosso dal menu hamburger (solo in pagina) */}
 
+            {/* BRANDS solo nel menu */}
             <View style={styles.drawerSection}>
               <Text style={styles.drawerLabel}>{T.brands}</Text>
               <View style={{flexDirection:"row", flexWrap:"wrap", gap:8 as any, marginTop:8}}>
@@ -184,6 +172,21 @@ export default function HomeScreen(){
                 ))}
               </View>
             </View>
+
+            {/* Utente + Logout allineati a sinistra */}
+            {user && (
+              <View style={[styles.drawerSection, styles.drawerUser]}>
+                <Text style={styles.drawerUserEmail}>{user.displayName || user.email}</Text>
+                <Pressable onPress={()=>signOut(auth)} style={styles.logoutBtnDrawer}>
+                  <Text style={styles.logoutTxtDrawer}>Logout</Text>
+                </Pressable>
+              </View>
+            )}
+
+            {/* Selettore lingua in basso */}
+            <View style={styles.drawerFooter}>
+              <LangSelector />
+            </View>
           </View>
         </>
       )}
@@ -191,7 +194,7 @@ export default function HomeScreen(){
   );
 }
 
-const C = { gold:"#D4AF37", bg:"#000", panel:"#0E1116" };
+const C = { gold:"#D4AF37", bg:"#000", panel:"#0E1116", green:"#009639" };
 
 const styles = StyleSheet.create({
   wrap:{ flex:1, backgroundColor:C.bg },
@@ -211,12 +214,13 @@ const styles = StyleSheet.create({
   brandActive:{ backgroundColor:"#fff" },
   brandTxt:{ color:"#EDEDED", fontSize:12 },
   brandTxtActive:{ color:"#000", fontSize:12, fontWeight:"700" },
+
   userRow:{flexDirection:"row",alignItems:"center",justifyContent:"space-between",marginBottom:8},
   userName:{color:"#fff",fontWeight:"700"},
   logoutBtn:{ backgroundColor:"#fff", paddingVertical:6, paddingHorizontal:10, borderRadius:999, marginLeft:10 },
   logoutTxt:{ color:"#000", fontWeight:"700" },
 
-  // NEW: stili hamburger/drawer non invasivi
+  // Drawer
   hamburgerBtn:{ width:36, height:36, borderRadius:18, alignItems:"center", justifyContent:"center", borderWidth:1, borderColor:"#222", backgroundColor:"#111", marginBottom:10 },
   scrim:{ position:"absolute", top:0, bottom:0, left:0, right:0, backgroundColor:"rgba(0,0,0,0.35)" },
   drawer:{ position:"absolute", top:0, bottom:0, left:0, width:300, backgroundColor:"#fff", paddingTop:16, paddingHorizontal:12 },
@@ -225,4 +229,15 @@ const styles = StyleSheet.create({
   closeBtn:{ width:34, height:34, borderRadius:17, alignItems:"center", justifyContent:"center", backgroundColor:"#f2f2f2" },
   drawerSection:{ marginTop:10 },
   drawerLabel:{ color:"#111", fontWeight:"700" },
+  drawerFooter:{ position:"absolute", left:12, right:12, bottom:12 },
+
+  // Stili selezione nel menu hamburger (verde del sito)
+  pillActiveDrawer:{ backgroundColor:C.green },
+  pillTxtActiveDrawer:{ color:"#fff" },
+
+  // Utente nel drawer (allineato a sinistra)
+  drawerUser:{ alignItems:"flex-start" },
+  drawerUserEmail:{ color:"#111", fontWeight:"700", marginBottom:8 },
+  logoutBtnDrawer:{ backgroundColor:C.green, paddingVertical:6, paddingHorizontal:12, borderRadius:999 },
+  logoutTxtDrawer:{ color:"#fff", fontWeight:"700" },
 });

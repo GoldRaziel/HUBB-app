@@ -1,9 +1,9 @@
 import React from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { openGoogleMaps, tel } from "../utils/maps";
 
-const COLORS = { gold:"#D4AF37", white:"#fff", black:"#000", green:"#009639" };
+const COLORS = { gold:"#D4AF37", white:"#fff", black:"#000", red:"#E53935" };
 
 type Props = {
   venue: {
@@ -25,14 +25,20 @@ export default function VenueCard({ venue }:Props){
       </View>
 
       <View style={styles.actions}>
-        <Pressable onPress={()=>openGoogleMaps({lat:venue.lat,lng:venue.lng,q:venue.name})} style={styles.iconBtn} accessibilityLabel="Open in Google Maps">
-          <Ionicons name="map-outline" size={20} color={COLORS.green}/>
-          <Text style={styles.iconTxt}>Maps</Text>
+        {/* Google Maps */}
+        <Pressable
+          onPress={()=>openGoogleMaps({lat:venue.lat,lng:venue.lng,q:venue.name})}
+          style={styles.iconBtn}
+          accessibilityLabel="Open in Google Maps"
+          accessibilityRole="button"
+        >
+          <MaterialCommunityIcons name="google-maps" size={20} color="#34A853" />
+          <Text style={styles.iconTxt}>Google Maps</Text>
         </Pressable>
 
         {venue.phone ? (
           <Pressable onPress={()=>tel(venue.phone)} style={styles.iconBtn} accessibilityLabel="Call venue">
-            <MaterialIcons name="phone" size={20} color={COLORS.gold}/>
+            <MaterialIcons name="phone" size={20} color={COLORS.red}/>
             <Text style={styles.iconTxt}>Call</Text>
           </Pressable>
         ): null}
