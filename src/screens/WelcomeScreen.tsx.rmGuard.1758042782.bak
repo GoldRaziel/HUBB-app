@@ -87,6 +87,12 @@ export default function WelcomeScreen() {
 
   const { request, promptAsync } = useGoogleAuth({
 
+    // Guard: se mancano i Client ID nativi, avvisa e non procedere su mobile
+    useEffect(() => {
+      if (Platform.OS !== "web" && (!ANDROID_CLIENT_ID || !IOS_CLIENT_ID)) {
+        Alert.alert("Google Sign-In", "Mancano i Client ID Android/iOS. Aggiungili in app.json → expo.extra.googleAndroidClientId / googleIosClientId.");
+      }
+    }, []);
     expoClientId: EXPO_CLIENT_ID,
     webClientId: WEB_CLIENT_ID,
   });

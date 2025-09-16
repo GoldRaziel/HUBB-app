@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useCallback } from "react";
-import Constants from "expo-constants";
 import {
   View, Text, Pressable, ActivityIndicator, Alert,
   TextInput, Image, Platform, I18nManager, StyleSheet,
@@ -80,19 +79,15 @@ export default function WelcomeScreen() {
     }
   }, [lang]);
 
-  const EXPO_CLIENT_ID = (Constants as any).expoConfig?.extra?.googleWebClientId || (Constants as any).manifest?.extra?.googleWebClientId || "";
-  const WEB_CLIENT_ID  = (Constants as any).expoConfig?.extra?.googleWebClientId || (Constants as any).manifest?.extra?.googleWebClientId || "";
-    const ANDROID_CLIENT_ID = (Constants as any).expoConfig?.extra?.googleAndroidClientId || (Constants as any).manifest?.extra?.googleAndroidClientId || "";
-    const IOS_CLIENT_ID     = (Constants as any).expoConfig?.extra?.googleIosClientId     || (Constants as any).manifest?.extra?.googleIosClientId     || "";
+  const EXPO_CLIENT_ID = "442951244084-lj40t8dv4lh7vke5tliijk6ke9pf94ss.apps.googleusercontent.com";
+  const WEB_CLIENT_ID  = "442951244084-1ujfjj5cvi06hd6jdknuq11j0r2u67ro.apps.googleusercontent.com";
 
   const { request, promptAsync } = useGoogleAuth({
-
     expoClientId: EXPO_CLIENT_ID,
     webClientId: WEB_CLIENT_ID,
   });
 
     const handleGoogle = useCallback(async () => {
-    Alert.alert("Debug","handleGoogle pressed");
     try {
       setBusy(true);
 
@@ -105,8 +100,8 @@ export default function WelcomeScreen() {
       }
 
       // flusso Expo AuthSession per mobile
-      
-      const res = await promptAsync({ useProxy: true });
+      if (!request) return;
+      const res = await promptAsync();
       if (res?.type !== "success") {
         Alert.alert(
           T.continueWithGoogle,
@@ -172,7 +167,7 @@ const handleEmailLogin = useCallback(async () => {
 
   return (
     <View style={[styles.container, isRTL && styles.rtl]}>
-      <Image source={require("../../assets/Logo.png")} resizeMode="contain" style={{ alignSelf: "center", marginTop: 40, marginBottom: 20, width: 220, height: 120, transform: [{ scale: 1.5 }] }} accessibilityLabel="HUBB logo" />
+      <Image source={require("../../assets/Logo.png")} resizeMode="contain" style={{ alignSelf: "center", marginTop: 40, marginBottom: 20, width: 220, height: 120, transform: [{ scale: 1.3 }] }} accessibilityLabel="HUBB logo" />
       <Text style={styles.title}>{T.title}</Text>
 
       {/* Email / Password */}
@@ -209,7 +204,7 @@ const handleEmailLogin = useCallback(async () => {
       </View>
 
       {/* Google style button */}
-      <Pressable onPress={handleGoogle} style={[styles.googleBtn, {zIndex:10}]}>
+      <Pressable disabled={!request || busy} onPress={handleGoogle} style={[styles.googleBtn, (!request || busy) && styles.btnDisabled]}>
         <Image source={{ uri: "https://developers.google.com/identity/images/g-logo.png" }} style={styles.googleIcon}/>
         <Text style={styles.googleText}>{T.continueWithGoogle}</Text>
       </Pressable>
@@ -225,13 +220,8 @@ const styles = StyleSheet.create({
   },
   rtl: { direction: "rtl" as any, writingDirection: "rtl" as any },
   logo: { width: 140, height: 140, marginBottom: 12 },
-  title: {
-    fontSize: 20,
-    textAlign: "left",
-    alignSelf: "flex-start",
-    color: COLORS.white,
-    marginBottom: 16,
-  },
+  title: { fontSize: 24, fontWeight: "800", color: COLORS.white, textAlign: "center", marginBottom: 18 },
+  subtitle: { fontSize: 14, color: COLORS.white, opacity: 0.9, textAlign: "center", marginBottom: 20 },
   form: { width: "100%", maxWidth: 420, marginBottom: 16 },
   inputGroup: { marginBottom: 12 },
   label: { color: COLORS.gold, marginBottom: 6, fontWeight: "600" },

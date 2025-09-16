@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useCallback } from "react";
-import Constants from "expo-constants";
 import {
   View, Text, Pressable, ActivityIndicator, Alert,
   TextInput, Image, Platform, I18nManager, StyleSheet,
@@ -80,19 +79,15 @@ export default function WelcomeScreen() {
     }
   }, [lang]);
 
-  const EXPO_CLIENT_ID = (Constants as any).expoConfig?.extra?.googleWebClientId || (Constants as any).manifest?.extra?.googleWebClientId || "";
-  const WEB_CLIENT_ID  = (Constants as any).expoConfig?.extra?.googleWebClientId || (Constants as any).manifest?.extra?.googleWebClientId || "";
-    const ANDROID_CLIENT_ID = (Constants as any).expoConfig?.extra?.googleAndroidClientId || (Constants as any).manifest?.extra?.googleAndroidClientId || "";
-    const IOS_CLIENT_ID     = (Constants as any).expoConfig?.extra?.googleIosClientId     || (Constants as any).manifest?.extra?.googleIosClientId     || "";
+  const EXPO_CLIENT_ID = "442951244084-lj40t8dv4lh7vke5tliijk6ke9pf94ss.apps.googleusercontent.com";
+  const WEB_CLIENT_ID  = "442951244084-1ujfjj5cvi06hd6jdknuq11j0r2u67ro.apps.googleusercontent.com";
 
   const { request, promptAsync } = useGoogleAuth({
-
     expoClientId: EXPO_CLIENT_ID,
     webClientId: WEB_CLIENT_ID,
   });
 
     const handleGoogle = useCallback(async () => {
-    Alert.alert("Debug","handleGoogle pressed");
     try {
       setBusy(true);
 
@@ -105,8 +100,8 @@ export default function WelcomeScreen() {
       }
 
       // flusso Expo AuthSession per mobile
-      
-      const res = await promptAsync({ useProxy: true });
+      if (!request) return;
+      const res = await promptAsync();
       if (res?.type !== "success") {
         Alert.alert(
           T.continueWithGoogle,
@@ -209,7 +204,7 @@ const handleEmailLogin = useCallback(async () => {
       </View>
 
       {/* Google style button */}
-      <Pressable onPress={handleGoogle} style={[styles.googleBtn, {zIndex:10}]}>
+      <Pressable disabled={!request || busy} onPress={handleGoogle} style={[styles.googleBtn, (!request || busy) && styles.btnDisabled]}>
         <Image source={{ uri: "https://developers.google.com/identity/images/g-logo.png" }} style={styles.googleIcon}/>
         <Text style={styles.googleText}>{T.continueWithGoogle}</Text>
       </Pressable>
@@ -221,14 +216,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1, backgroundColor: COLORS.black,
     paddingHorizontal: 24, paddingVertical: 32,
-    alignItems: "center", justifyContent: "center",
+    alignItems: "flex-start", justifyContent: "center",
   },
   rtl: { direction: "rtl" as any, writingDirection: "rtl" as any },
   logo: { width: 140, height: 140, marginBottom: 12 },
   title: {
     fontSize: 20,
     textAlign: "left",
-    alignSelf: "flex-start",
     color: COLORS.white,
     marginBottom: 16,
   },
@@ -242,14 +236,14 @@ const styles = StyleSheet.create({
   },
   buttonBase: {
     width: "100%", maxWidth: 420, paddingVertical: 14, borderRadius: 999,
-    alignItems: "center", justifyContent: "center", marginTop: 8,
+    alignItems: "flex-start", justifyContent: "center", marginTop: 8,
   },
   btnGreen: { backgroundColor: "#009639" },
   btnRed: { backgroundColor: "#EF3340", marginTop: 22 },
   btnDisabled: { opacity: 0.6 },
   btnTextWhite: { color: COLORS.white, fontWeight: "700", letterSpacing: 0.3 },
   googleBtn: {
-    flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 10 as any,
+    flexDirection: "row", alignItems: "flex-start", justifyContent: "center", gap: 10 as any,
     width: "100%", maxWidth: 420, height: 48, backgroundColor: COLORS.white,
     borderRadius: 999, borderWidth: 1, borderColor: COLORS.googleBorder, marginTop: 10, paddingHorizontal: 14,
   },
