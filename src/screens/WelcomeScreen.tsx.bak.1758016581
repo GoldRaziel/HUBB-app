@@ -11,7 +11,7 @@ import {
 import { auth } from "../lib/firebase";
 import { useGoogleAuth } from "../auth/useGoogleAuth";
 import { useLang } from "../context/LangContext";
-// import LangSelector from "../components/LangSelector";
+import LangSelector from "../components/LangSelector";
 
 // Testi EN default + IT/AR
 type Lang = "en" | "it" | "ar";
@@ -156,6 +156,8 @@ const handleEmailLogin = useCallback(async () => {
   if (user) {
     return (
       <View style={[styles.container, isRTL && styles.rtl]}>
+        <LangSelector />
+        <Image source={require("../../assets/Logo.png")} resizeMode="contain" style={styles.logo}/>
         <Text style={styles.title}>{T.welcome}</Text>
         <Text style={styles.subtitle}>{user.email || user.displayName || "User"}</Text>
         <Pressable onPress={() => signOut(auth)} style={[styles.buttonBase, styles.btnRed]}>
@@ -167,6 +169,9 @@ const handleEmailLogin = useCallback(async () => {
 
   return (
     <View style={[styles.container, isRTL && styles.rtl]}>
+      <LangSelector />
+
+      <Image source={require("../../assets/Logo.png")} resizeMode="contain" style={styles.logo}/>
       <Text style={styles.title}>{T.title}</Text>
 
       {/* Email / Password */}

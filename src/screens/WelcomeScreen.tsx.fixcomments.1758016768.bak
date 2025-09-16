@@ -64,6 +64,8 @@ export default function WelcomeScreen() {
   const [password, setPassword] = useState("");
 
   const { lang, isRTL } = useLang();
+  const { setLang } = useLang();
+  useEffect(() => { setLang("en"); }, []);
   const T = STRINGS[lang];
 
   useEffect(() => {
@@ -156,6 +158,8 @@ const handleEmailLogin = useCallback(async () => {
   if (user) {
     return (
       <View style={[styles.container, isRTL && styles.rtl]}>
+        <!-- <LangSelector /> -->
+        <Image source={require("../../assets/Logo.png")} resizeMode="contain" style={[styles.logo, { transform: [{ scale: 1.3 }] }]}/> -->
         <Text style={styles.title}>{T.welcome}</Text>
         <Text style={styles.subtitle}>{user.email || user.displayName || "User"}</Text>
         <Pressable onPress={() => signOut(auth)} style={[styles.buttonBase, styles.btnRed]}>
@@ -167,6 +171,9 @@ const handleEmailLogin = useCallback(async () => {
 
   return (
     <View style={[styles.container, isRTL && styles.rtl]}>
+      <!-- <LangSelector /> -->
+
+      <Image source={require("../../assets/Logo.png")} resizeMode="contain" style={[styles.logo, { transform: [{ scale: 1.3 }] }]}/> -->
       <Text style={styles.title}>{T.title}</Text>
 
       {/* Email / Password */}
@@ -181,7 +188,7 @@ const handleEmailLogin = useCallback(async () => {
             placeholder={T.emailPlaceholder}
             placeholderTextColor={COLORS.muted}
             style={styles.input}
-          />
+          /> -->
         </View>
 
         <View style={styles.inputGroup}>
@@ -194,17 +201,17 @@ const handleEmailLogin = useCallback(async () => {
             placeholder="••••••••"
             placeholderTextColor={COLORS.muted}
             style={styles.input}
-          />
+          /> -->
         </View>
 
         <Pressable disabled={busy} onPress={handleEmailLogin} style={[styles.buttonBase, styles.btnGreen, busy && styles.btnDisabled]}>
-          {busy ? <ActivityIndicator color={COLORS.white} /> : <Text style={styles.btnTextWhite}>{T.continueWithEmail}</Text>}
+          {busy ? <ActivityIndicator color={COLORS.white} /> --> : <Text style={styles.btnTextWhite}>{T.continueWithEmail}</Text>}
         </Pressable>
       </View>
 
       {/* Google style button */}
       <Pressable disabled={!request || busy} onPress={handleGoogle} style={[styles.googleBtn, (!request || busy) && styles.btnDisabled]}>
-        <Image source={{ uri: "https://developers.google.com/identity/images/g-logo.png" }} style={styles.googleIcon}/>
+        <Image source={{ uri: "https://developers.google.com/identity/images/g-logo.png" }} style={styles.googleIcon}/> -->
         <Text style={styles.googleText}>{T.continueWithGoogle}</Text>
       </Pressable>
     </View>
