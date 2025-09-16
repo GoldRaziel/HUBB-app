@@ -1,29 +1,28 @@
-import { initializeApp, getApps, FirebaseApp } from "firebase/app";
-import { getAuth, initializeAuth, type Auth } from "firebase/auth";
-import { getReactNativePersistence } from "firebase/auth";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+// @ts-nocheck
+import { initializeApp, getApps } from "firebase/app";
+import { initializeAuth, getReactNativePersistence } from "firebase/auth";
+import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
+import Constants from "expo-constants";
 
-// Config Web del tuo progetto
+// Prefer ENV (EXPO_PUBLIC_*) then fallback to app.json/app.config "extra.firebase"
+const extra = (Constants.expoConfig?.extra as any) || {};
+const extraFirebase = extra.firebase || {};
+
 const firebaseConfig = {
-  apiKey: "AIzaSyA3Ru7RWUl-Dhlf2rgRgevOd58whtDUjVw",
-  authDomain: "hubb-prod-11b40.firebaseapp.com",
-  projectId: "hubb-prod-11b40",
-  storageBucket: "hubb-prod-11b40.firebasestorage.app",
-  messagingSenderId: "442951244084",
-  appId: "1:442951244084:web:a996b705b0ca66fb756d61"
+  apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY ?? extra.EXPO_PUBLIC_FIREBASE_API_KEY ?? extraFirebase.apiKey,
+  authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN ?? extra.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN ?? extraFirebase.authDomain,
+  projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID ?? extra.EXPO_PUBLIC_FIREBASE_PROJECT_ID ?? extraFirebase.projectId,
+  storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET ?? extra.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET ?? extraFirebase.storageBucket,
+  messagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID ?? extra.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID ?? extraFirebase.messagingSenderId,
+  appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID ?? extra.EXPO_PUBLIC_FIREBASE_APP_ID ?? extraFirebase.appId,
 };
 
-let app: FirebaseApp;
-let auth: Auth;
-
-if (!getApps().length) {
-  app = initializeApp(firebaseConfig);
-  auth = initializeAuth(app, {
-    persistence: getReactNativePersistence(AsyncStorage),
-  });
-} else {
-  app = getApps()[0]!;
-  auth = getAuth(app);
+if (!firebaseConfig.apiKey) {
+  console.warn("[HUBB] Firebase apiKey assente. Verifica ENV EXPO_PUBLIC_* o extra.firebase in app.json/app.config.");
 }
 
-export { app, auth };
+const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+
+export const auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(ReactNativeAsyncStorage),
+});
